@@ -1,20 +1,27 @@
-import sys
-
-from search_engine.half import half
+from search_engine.search_engine import search
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Error: You must provide a number as an argument.")
-        return
+    # Текст документов
+    doc1 = "I can't shoot straight unless I've had a pint!"
+    doc2 = "Don't shoot shoot shoot that thing at me."
+    doc3 = "I'm your shooter."
 
-    possible_number = sys.argv[1]
+    # создание документа
+    # документ имеет два атрибута "id" и "text"
+    docs = [
+        {'id': 'doc1', 'text': doc1},
+        {'id': 'doc2', 'text': doc2},
+        {'id': 'doc3', 'text': doc3},
+    ]
 
-    try:
-        number = float(possible_number)
-        print(half(number))
-    except ValueError:
-        print(f"Error: '{possible_number}' is not a valid number.")
+    # поисковый движок проводит поиск
+    result = search(docs, 'shoot')
+
+    print(result)  # => ['doc1', 'doc2']
+
+    # Документы пусты
+    search([], 'shoot')  # []
 
 
 if __name__ == "__main__":

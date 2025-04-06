@@ -55,9 +55,9 @@ def search(docs: list[dict[str, str]], string: str) -> list[str]:
         if _term not in docs_index:
             return 0.0
 
+        term_count = len(docs_index[_term])
         idf = math.log2(
-            1 + (len(docs) - len(docs_index[_term]) + 1)
-            / (len(docs_index[_term]) + 0.5)
+            1 + (len(docs) - term_count + 1) / (term_count + 0.5)
         )
         return idf
 

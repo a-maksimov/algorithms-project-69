@@ -25,6 +25,15 @@ def process_docs(docs_dict: dict[str, str]) -> dict[str, list[str]]:
     return processed_docs_dict
 
 
+def build_index(docs_dict: dict[str, list[str]]) -> dict[str, set[str]]:
+    docs_index = {}
+    for key, value in docs_dict.items():
+        for term in value:
+            docs_index.setdefault(term, set()).add(key)
+
+    return docs_index
+
+
 def search(docs: list[dict[str, str]], string: str) -> list[str]:
     if not docs:
         return []
@@ -39,13 +48,16 @@ def search(docs: list[dict[str, str]], string: str) -> list[str]:
 
     docs_dict = {doc["id"]: doc["text"] for doc in docs}
     processed_docs_dict = process_docs(docs_dict)
+    docs_index = build_index(processed_docs_dict)
+
     terms = get_terms(string.split())
 
-    results = []
-    for key, value in processed_docs_dict.items():
-        if not any(term in value for term in terms):
+    results = set()
+    for term in terms:
+        if term not in docs_index:
             continue
-        results.append(key)
+
+        results.update(docs_index[term])
 
     sorted_results = sorted(results, key=count_term, reverse=True)
 

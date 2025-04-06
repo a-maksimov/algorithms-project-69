@@ -45,11 +45,16 @@ def search(docs: list[dict[str, str]], string: str) -> list[str]:
         for _term in terms:
             if _term not in doc:
                 continue
+            if _term not in docs_index:
+                continue
             tf = doc.count(_term) / len(doc)
             total_score += tf * idf_dict[_term]
         return total_score
 
     def get_idf(_term: str) -> float:
+        if _term not in docs_index:
+            return 0.0
+
         idf = math.log2(
             1 + (len(docs) - len(docs_index[_term]) + 1)
             / (len(docs_index[_term]) + 0.5)

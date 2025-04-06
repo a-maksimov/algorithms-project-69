@@ -41,14 +41,15 @@ def search(docs: list[dict[str, str]], string: str) -> list[str]:
 
     def count_term(_key: str) -> float:
         total_score = 0.0
+        doc = processed_docs_dict[_key]
         for _term in terms:
-            if _term not in processed_docs_dict[_key]:
+            if _term not in doc:
                 continue
-            tf = processed_docs_dict[_key].count(_term) / len(processed_docs_dict[_key])
-            total_score += tf * get_idf(_term)
+            tf = doc.count(_term) / len(doc)
+            total_score += tf * idf_dict[_term]
         return total_score
 
-    def get_idf(_term: str):
+    def get_idf(_term: str) -> float:
         idf = math.log2(
             1 + (len(docs) - len(docs_index[_term]) + 1)
             / (len(docs_index[_term]) + 0.5)
@@ -60,6 +61,7 @@ def search(docs: list[dict[str, str]], string: str) -> list[str]:
     docs_index = build_index(processed_docs_dict)
 
     terms = get_terms(string.split())
+    idf_dict = {term: get_idf(term) for term in terms}
 
     results = set()
     for term in terms:

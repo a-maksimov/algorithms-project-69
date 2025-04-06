@@ -1,3 +1,4 @@
+import math
 import re
 
 
@@ -43,8 +44,14 @@ def search(docs: list[dict[str, str]], string: str) -> list[str]:
         for word in processed_docs_dict[_key]:
             if word not in terms:
                 continue
-            counter += 1
+            for _term in terms:
+                if not word == _term:
+                    continue
+                counter += get_tf_idf(len(docs_index[_term]))
         return counter
+
+    def get_tf_idf(term_count: int):
+        return math.log2(1 + (len(docs) - term_count + 1) / (term_count + 0.5))
 
     docs_dict = {doc["id"]: doc["text"] for doc in docs}
     processed_docs_dict = process_docs(docs_dict)
